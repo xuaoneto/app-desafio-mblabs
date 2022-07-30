@@ -17,6 +17,7 @@ interface ApplicationContextProps {
   userLogged: Account | undefined;
   setUserLogged: Dispatch<SetStateAction<Account | undefined>>;
   isMobile: boolean | undefined;
+  setUpdateUserState: Dispatch<SetStateAction<number>>;
 }
 
 const DEFAULT = {
@@ -25,6 +26,7 @@ const DEFAULT = {
   userLogged: undefined,
   setUserLogged: () => undefined,
   isMobile: undefined,
+  setUpdateUserState: () => undefined,
 };
 
 const Context = createContext<ApplicationContextProps>(DEFAULT);
@@ -33,6 +35,7 @@ const Provider = ({ children }: { children: ReactNode }) => {
   const [isLogged, setIsLogged] = useState(false);
   const [userLogged, setUserLogged] = useState<Account | undefined>();
   const [isMobile, setIsMobile] = useState<boolean | undefined>();
+  const [updateUserState, setUpdateUserState] = useState(0);
   const [isMobileMediaQuery] = useMediaQuery("(max-width: 767px)");
 
   useEffect(() => {
@@ -50,13 +53,14 @@ const Provider = ({ children }: { children: ReactNode }) => {
             if (response.status === 200) {
               setIsLogged(true);
               setUserLogged(response.data);
+              console.log(response.data);
             }
           })
           .catch((response) => console.log("validate login error"));
       }
     }
     validateLogin();
-  }, [isLogged]);
+  }, [isLogged, updateUserState]);
 
   return (
     <Context.Provider
@@ -66,6 +70,7 @@ const Provider = ({ children }: { children: ReactNode }) => {
         userLogged,
         setUserLogged,
         isMobile,
+        setUpdateUserState,
       }}
     >
       {children}

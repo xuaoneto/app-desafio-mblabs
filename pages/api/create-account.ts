@@ -23,26 +23,30 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  let { login, pass, name, premiumAccount }: AccountReq = req.body;
+  if (req.method === "POST") {
+    let { login, pass, name, premiumAccount }: AccountReq = req.body;
 
-  if (!login || !pass || !name) res.status(400).send("conta inválida.");
-  else {
-    const isRepeated =
-      accounts.find((current) => current.login === login) !== undefined;
-    if (isRepeated)
-      return res.status(400).send("já existe uma conta com este login");
+    if (!login || !pass || !name) res.status(400).send("conta inválida.");
     else {
-      let token = validToken(accounts);
+      const isRepeated =
+        accounts.find((current) => current.login === login) !== undefined;
+      if (isRepeated)
+        return res.status(400).send("já existe uma conta com este login");
+      else {
+        let token = validToken(accounts);
 
-      accounts.push({
-        login,
-        pass,
-        name,
-        premiumAccount,
-        token,
-      });
-      res.status(200).send("conta criada com sucesso");
+        accounts.push({
+          login,
+          pass,
+          name,
+          premiumAccount,
+          token,
+        });
+        res.status(200).send("conta criada com sucesso");
+      }
     }
+  } else {
+    res.status(404).send("not found");
   }
 }
 

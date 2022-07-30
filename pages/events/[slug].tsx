@@ -1,11 +1,11 @@
 import { Container, Image, Text } from "@chakra-ui/react";
 import { api } from "api";
+import { BuyButton } from "components/event-page/buy-button";
 import { Navbar } from "components/navbar";
-
 import type { NextPage } from "next";
 import { Event } from "../api/get-events";
 
-const CreateEvent: NextPage<{ event: Event }> = ({ event }) => {
+const EventPage: NextPage<{ event: Event }> = ({ event }) => {
   return (
     <>
       <Navbar />
@@ -23,14 +23,15 @@ const CreateEvent: NextPage<{ event: Event }> = ({ event }) => {
         </Text>
         <Text>{event.description}</Text>
       </Container>
+      <BuyButton event={event} numberOfTickets={event.tickets} />
     </>
   );
 };
 
-export default CreateEvent;
+export default EventPage;
 
-export async function getStaticProps({ params }: { params: { id: string } }) {
-  const response = await api.get(`api/get-events?id=${params.id}`);
+export async function getStaticProps({ params }: { params: { slug: string } }) {
+  const response = await api.get(`api/get-events?id=${params.slug}`);
   const event = response.data[0];
 
   return {
@@ -43,10 +44,11 @@ export async function getStaticProps({ params }: { params: { id: string } }) {
 
 export async function getStaticPaths() {
   const getAllEvents = await api.get("api/get-events");
-  let paths: string[] = [];
+  let paths: { params: { slug: string } }[] = [];
   getAllEvents.data.map((event: Event) => {
-    paths.push(`/events/${event.id}`);
+    paths.push({ params: { slug: `${event.id}` } });
   });
+
   return {
     paths,
     fallback: false,

@@ -8,6 +8,7 @@ export interface Event {
   description: string;
   image: string;
   tickets: number;
+  price: number;
 }
 
 type Data = Event[] | string;
@@ -24,6 +25,6 @@ export default function handler(
       res.status(200).json(filteredEvents);
     } else res.status(200).json(events);
   } else {
-    res.status(404).end("not found");
+    res.status(404).send("not found");
   }
 }

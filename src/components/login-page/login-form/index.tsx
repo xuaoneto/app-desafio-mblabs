@@ -82,8 +82,8 @@ export function LoginForm() {
             mb="10px"
             bg="transparent"
             borderColor="primary.500"
-            onChange={(e) => setLogin(e.target.value)}
             _focus={{ outline: "none", boxShadow: "none", borderColor: "#fff" }}
+            onChange={(e) => setLogin(e.target.value)}
             isInvalid={isLoginError}
           />
           <FieldError isError={isLoginError}>

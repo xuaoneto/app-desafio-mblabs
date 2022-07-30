@@ -1,23 +1,37 @@
-import { Container, Text } from "@chakra-ui/react";
+import { useToast, UseToastOptions } from "@chakra-ui/react";
 import { useApplicationContext } from "contexts/application-context";
 import { useEffect, useState } from "react";
 
-export function Apresentation() {
+export function ToastEvents() {
   const [name, setName] = useState("");
   const { userLogged } = useApplicationContext();
-
+  const toast = useToast();
   useEffect(() => {
     if (userLogged) {
       setName(userLogged.name);
     }
   }, [userLogged]);
-  return (
-    <>
-      {userLogged ? (
-        <Container mt={{ base: "80px" }} mb="30px">
-          <Text fontSize={{ base: "30" }}>Olá, {name}</Text>
-        </Container>
-      ) : null}
-    </>
-  );
+
+  useEffect(() => {
+    if (name) {
+      toast({
+        title: ` Olá, ${name}`,
+        isClosable: true,
+        position: "top-right",
+        ...toastDefaultStyle,
+      });
+    }
+  }, [name]);
+
+  return <></>;
 }
+
+export const toastDefaultStyle: UseToastOptions = {
+  position: "top-right",
+  variant: "none",
+  containerStyle: {
+    background: "var(--chakra-colors-secondary-400)",
+    color: "#ffffff",
+    borderRadius: "6",
+  },
+};

@@ -13,16 +13,20 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { login, pass }: AccountReq = req.body;
+  if (req.method === "POST") {
+    const { login, pass }: AccountReq = req.body;
 
-  if (!login || !pass) res.status(400).send("conta inválida.");
-  else {
-    const registeredAccount: Account | undefined = accounts.find(
-      (current) => current.login === login && current.pass === pass
-    );
-    if (!registeredAccount) res.status(400).send("conta inválida.");
+    if (!login || !pass) res.status(400).send("conta inválida.");
     else {
-      res.status(200).send(registeredAccount.token);
+      const registeredAccount: Account | undefined = accounts.find(
+        (current) => current.login === login && current.pass === pass
+      );
+      if (!registeredAccount) res.status(400).send("conta inválida.");
+      else {
+        res.status(200).send(registeredAccount.token);
+      }
     }
+  } else {
+    res.status(404).send("not found");
   }
 }

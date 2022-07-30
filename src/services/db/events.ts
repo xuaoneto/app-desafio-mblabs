@@ -13,6 +13,7 @@ export const events: Event[] = [
     Visão detalhada sobre história da proteção jurídica e social da infância brasileira. Evolução histórica do direito da criança e do adolescente. Idade Antiga. Idade Média. O direito brasileiro – fases; O período pós-Constituição de 1988. Princípios e definições gerais do ECA: Doutrina da situação irregular; Doutrina da proteção integral; Proteção integral e os sistemas de garantias; Princípio da prioridade absoluta; Criança e adolescente como sujeitos de direito; Conceito de criança e de adolescente; Criança na primeira infância; Criança segundo a Convenção sobre Direitos da Criança; Diferenças de tratamento entre criança e adolescente no ECA; Estatuto da Juventude e sua relação com o ECA. Do direito à convivência familiar e comunitária; Programas de acolhimento familiar, institucional e prazos legais pertinentes. Adoção: Aspectos Gerais; ECA – Estatuto da Criança e do Adolescente, a Lei 8.069 de 90 (artigo 39 e seguintes); Adoção: Requisitos e Impedimentos; Requisitos para adoção (Subjetivos e Objetivos); Impedimentos; Adoção internacional; Direito de conhecer a origem biológica.`,
     image: "/images/event-test.jpg",
     tickets: 100,
+    price: 20,
   },
   {
     id: "baiosdjansa",
@@ -25,7 +26,8 @@ export const events: Event[] = [
     EMENTA
     Visão detalhada sobre história da proteção jurídica e social da infância brasileira. Evolução histórica do direito da criança e do adolescente. Idade Antiga. Idade Média. O direito brasileiro – fases; O período pós-Constituição de 1988. Princípios e definições gerais do ECA: Doutrina da situação irregular; Doutrina da proteção integral; Proteção integral e os sistemas de garantias; Princípio da prioridade absoluta; Criança e adolescente como sujeitos de direito; Conceito de criança e de adolescente; Criança na primeira infância; Criança segundo a Convenção sobre Direitos da Criança; Diferenças de tratamento entre criança e adolescente no ECA; Estatuto da Juventude e sua relação com o ECA. Do direito à convivência familiar e comunitária; Programas de acolhimento familiar, institucional e prazos legais pertinentes. Adoção: Aspectos Gerais; ECA – Estatuto da Criança e do Adolescente, a Lei 8.069 de 90 (artigo 39 e seguintes); Adoção: Requisitos e Impedimentos; Requisitos para adoção (Subjetivos e Objetivos); Impedimentos; Adoção internacional; Direito de conhecer a origem biológica.`,
     image: "/images/event-test.jpg",
-    tickets: 100,
+    tickets: 1,
+    price: 15,
   },
   {
     id: "aspldkasklmcdsa",
@@ -38,7 +40,8 @@ export const events: Event[] = [
     EMENTA
     Visão detalhada sobre história da proteção jurídica e social da infância brasileira. Evolução histórica do direito da criança e do adolescente. Idade Antiga. Idade Média. O direito brasileiro – fases; O período pós-Constituição de 1988. Princípios e definições gerais do ECA: Doutrina da situação irregular; Doutrina da proteção integral; Proteção integral e os sistemas de garantias; Princípio da prioridade absoluta; Criança e adolescente como sujeitos de direito; Conceito de criança e de adolescente; Criança na primeira infância; Criança segundo a Convenção sobre Direitos da Criança; Diferenças de tratamento entre criança e adolescente no ECA; Estatuto da Juventude e sua relação com o ECA. Do direito à convivência familiar e comunitária; Programas de acolhimento familiar, institucional e prazos legais pertinentes. Adoção: Aspectos Gerais; ECA – Estatuto da Criança e do Adolescente, a Lei 8.069 de 90 (artigo 39 e seguintes); Adoção: Requisitos e Impedimentos; Requisitos para adoção (Subjetivos e Objetivos); Impedimentos; Adoção internacional; Direito de conhecer a origem biológica.`,
     image: "/images/event-test.jpg",
-    tickets: 100,
+    tickets: 2,
+    price: 25,
   },
   {
     id: "askdaslkdk",
@@ -51,7 +54,8 @@ export const events: Event[] = [
     EMENTA
     Visão detalhada sobre história da proteção jurídica e social da infância brasileira. Evolução histórica do direito da criança e do adolescente. Idade Antiga. Idade Média. O direito brasileiro – fases; O período pós-Constituição de 1988. Princípios e definições gerais do ECA: Doutrina da situação irregular; Doutrina da proteção integral; Proteção integral e os sistemas de garantias; Princípio da prioridade absoluta; Criança e adolescente como sujeitos de direito; Conceito de criança e de adolescente; Criança na primeira infância; Criança segundo a Convenção sobre Direitos da Criança; Diferenças de tratamento entre criança e adolescente no ECA; Estatuto da Juventude e sua relação com o ECA. Do direito à convivência familiar e comunitária; Programas de acolhimento familiar, institucional e prazos legais pertinentes. Adoção: Aspectos Gerais; ECA – Estatuto da Criança e do Adolescente, a Lei 8.069 de 90 (artigo 39 e seguintes); Adoção: Requisitos e Impedimentos; Requisitos para adoção (Subjetivos e Objetivos); Impedimentos; Adoção internacional; Direito de conhecer a origem biológica.`,
     image: "/images/event-test.jpg",
-    tickets: 100,
+    tickets: 5,
+    price: 30,
   },
   {
     id: "fdoigjdkjfdsa",
@@ -64,6 +68,7 @@ export const events: Event[] = [
     EMENTA
     Visão detalhada sobre história da proteção jurídica e social da infância brasileira. Evolução histórica do direito da criança e do adolescente. Idade Antiga. Idade Média. O direito brasileiro – fases; O período pós-Constituição de 1988. Princípios e definições gerais do ECA: Doutrina da situação irregular; Doutrina da proteção integral; Proteção integral e os sistemas de garantias; Princípio da prioridade absoluta; Criança e adolescente como sujeitos de direito; Conceito de criança e de adolescente; Criança na primeira infância; Criança segundo a Convenção sobre Direitos da Criança; Diferenças de tratamento entre criança e adolescente no ECA; Estatuto da Juventude e sua relação com o ECA. Do direito à convivência familiar e comunitária; Programas de acolhimento familiar, institucional e prazos legais pertinentes. Adoção: Aspectos Gerais; ECA – Estatuto da Criança e do Adolescente, a Lei 8.069 de 90 (artigo 39 e seguintes); Adoção: Requisitos e Impedimentos; Requisitos para adoção (Subjetivos e Objetivos); Impedimentos; Adoção internacional; Direito de conhecer a origem biológica.`,
     image: "/images/event-test.jpg",
-    tickets: 100,
+    tickets: 8,
+    price: 10,
   },
 ];

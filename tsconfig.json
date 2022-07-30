@@ -16,6 +16,11 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "src/components/vectors/dolar-icon/index.tss"
+  ],
   "exclude": ["node_modules"]
 }

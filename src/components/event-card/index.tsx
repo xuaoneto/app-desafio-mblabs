@@ -26,7 +26,6 @@ export function EventCard({
           {title}
         </Text>
         <Text fontStyle="italic" fontWeight="light" noOfLines={3}>
-          {" "}
           {description}
         </Text>
       </Box>
