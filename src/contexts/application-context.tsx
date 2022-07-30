@@ -1,3 +1,4 @@
+import { useMediaQuery } from "@chakra-ui/react";
 import axios from "axios";
 import {
   createContext,
@@ -15,6 +16,7 @@ interface ApplicationContextProps {
   setIsLogged: Dispatch<SetStateAction<boolean>>;
   userLogged: Account | undefined;
   setUserLogged: Dispatch<SetStateAction<Account | undefined>>;
+  isMobile: boolean | undefined;
 }
 
 const DEFAULT = {
@@ -22,6 +24,7 @@ const DEFAULT = {
   setIsLogged: () => undefined,
   userLogged: undefined,
   setUserLogged: () => undefined,
+  isMobile: undefined,
 };
 
 const Context = createContext<ApplicationContextProps>(DEFAULT);
@@ -29,6 +32,12 @@ const Context = createContext<ApplicationContextProps>(DEFAULT);
 const Provider = ({ children }: { children: ReactNode }) => {
   const [isLogged, setIsLogged] = useState(false);
   const [userLogged, setUserLogged] = useState<Account | undefined>();
+  const [isMobile, setIsMobile] = useState<boolean | undefined>();
+  const [isMobileMediaQuery] = useMediaQuery("(max-width: 767px)");
+
+  useEffect(() => {
+    setIsMobile(isMobileMediaQuery);
+  }, [isMobileMediaQuery]);
 
   useEffect(() => {
     async function validateLogin() {
@@ -56,6 +65,7 @@ const Provider = ({ children }: { children: ReactNode }) => {
         setIsLogged,
         userLogged,
         setUserLogged,
+        isMobile,
       }}
     >
       {children}

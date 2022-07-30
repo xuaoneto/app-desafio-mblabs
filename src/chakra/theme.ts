@@ -4,8 +4,8 @@ const theme = extendTheme({
   styles: {
     global: {
       body: {
-        color: "#96CF24",
-        background: "#1a1a1a",
+        color: "#fff",
+        background: "#222",
       },
     },
   },
