@@ -8,7 +8,7 @@ export function ToastEvents() {
   const toast = useToast();
   useEffect(() => {
     if (userLogged) {
-      setName(userLogged.name);
+      setName(userLogged.name!);
     }
   }, [userLogged]);
 
@@ -27,7 +27,7 @@ export function ToastEvents() {
 }
 
 export const toastDefaultStyle: UseToastOptions = {
-  position: "top-right",
+  position: "top",
   variant: "none",
   containerStyle: {
     background: "var(--chakra-colors-secondary-400)",

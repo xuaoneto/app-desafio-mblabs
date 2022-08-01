@@ -32,7 +32,7 @@ export function BuyButton({
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const handleBuy = () => {
-    const { token } = userLogged!;
+    const token = window.localStorage.getItem("userToken");
     const { id } = event;
     const submitData = { token, id };
     setIsLoading(true);
@@ -74,7 +74,7 @@ export function BuyButton({
           <ModalHeader>{event.title}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text>Preço: R${event.price},00</Text>
+            <Text>Preço: R${event.price}</Text>
           </ModalBody>
 
           <ModalFooter>

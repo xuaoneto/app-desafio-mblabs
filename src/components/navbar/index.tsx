@@ -7,10 +7,11 @@ import { MyAccountButton } from "./my-account-button";
 
 export function Navbar() {
   const { isLogged } = useApplicationContext();
+
   return (
     <Box
       borderBottom="1px solid var(--chakra-colors-primary-500)"
-      h="100px"
+      h={navBarHeight}
       bg="secondary.500"
       color="primary.500"
     >
@@ -41,3 +42,5 @@ export function Navbar() {
     </Box>
   );
 }
+
+export const navBarHeight = "100px";

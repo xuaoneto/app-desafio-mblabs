@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { Account, accounts } from "./create-account";
 
-type Data = Account | string;
+type Data = Partial<Account> | string;
 
 interface AccountReq {
   token: string;
@@ -22,7 +22,8 @@ export default function handler(
       );
       if (!registeredAccount) res.status(400).send("conta inválida.");
       else {
-        res.status(200).json(registeredAccount);
+        const { name, tickets, premiumAccount } = registeredAccount;
+        res.status(200).json({ name, tickets, premiumAccount });
       }
     }
   } else {

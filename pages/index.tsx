@@ -16,12 +16,11 @@ const Home: NextPage<{ events: Event[] }> = ({ events }) => {
 
 export default Home;
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const response = await api.get("api/get-events");
   const events = response.data;
 
   return {
     props: { events },
-    revalidate: 10,
   };
 }

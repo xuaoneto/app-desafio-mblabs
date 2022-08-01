@@ -1,4 +1,4 @@
-import { useMediaQuery } from "@chakra-ui/react";
+import { useColorMode, useMediaQuery } from "@chakra-ui/react";
 import axios from "axios";
 import {
   createContext,
@@ -12,16 +12,16 @@ import {
 import { Account } from "../../pages/api/create-account";
 
 interface ApplicationContextProps {
-  isLogged: boolean;
-  setIsLogged: Dispatch<SetStateAction<boolean>>;
-  userLogged: Account | undefined;
-  setUserLogged: Dispatch<SetStateAction<Account | undefined>>;
+  isLogged: boolean | undefined;
+  setIsLogged: Dispatch<SetStateAction<boolean | undefined>>;
+  userLogged: Partial<Account> | undefined;
+  setUserLogged: Dispatch<SetStateAction<Partial<Account> | undefined>>;
   isMobile: boolean | undefined;
   setUpdateUserState: Dispatch<SetStateAction<number>>;
 }
 
 const DEFAULT = {
-  isLogged: false,
+  isLogged: undefined,
   setIsLogged: () => undefined,
   userLogged: undefined,
   setUserLogged: () => undefined,
@@ -32,8 +32,8 @@ const DEFAULT = {
 const Context = createContext<ApplicationContextProps>(DEFAULT);
 
 const Provider = ({ children }: { children: ReactNode }) => {
-  const [isLogged, setIsLogged] = useState(false);
-  const [userLogged, setUserLogged] = useState<Account | undefined>();
+  const [isLogged, setIsLogged] = useState<boolean | undefined>();
+  const [userLogged, setUserLogged] = useState<Partial<Account> | undefined>();
   const [isMobile, setIsMobile] = useState<boolean | undefined>();
   const [updateUserState, setUpdateUserState] = useState(0);
   const [isMobileMediaQuery] = useMediaQuery("(max-width: 767px)");
@@ -45,7 +45,7 @@ const Provider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     async function validateLogin() {
       const userToken = window.localStorage.getItem("userToken");
-      if (!userToken) return;
+      if (!userToken) return setIsLogged(false);
       else {
         axios
           .post("/api/get-login-by-token", { token: userToken })
@@ -56,7 +56,10 @@ const Provider = ({ children }: { children: ReactNode }) => {
               console.log(response.data);
             }
           })
-          .catch((response) => console.log("validate login error"));
+          .catch((response) => {
+            setIsLogged(false);
+            console.log("validate login error");
+          });
       }
     }
     validateLogin();

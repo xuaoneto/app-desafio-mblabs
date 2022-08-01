@@ -18,8 +18,8 @@ export default function handler(
       if (events[event].tickets > 0) {
         events[event].tickets -= 1;
 
-        if (accounts[buyer].tickets) accounts[buyer].tickets!.push({ id });
-        else accounts[buyer].tickets = [{ id }];
+        if (accounts[buyer].tickets) accounts[buyer].tickets!.push(id);
+        else accounts[buyer].tickets = [id];
 
         res.status(200).send("Compra realizada com sucesso");
       } else {

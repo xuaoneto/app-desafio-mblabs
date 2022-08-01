@@ -9,11 +9,13 @@ import {
   Checkbox,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { FieldError } from "components/field-error";
+import { FieldInput } from "components/field-input.tsx";
+
 import { Logo } from "components/vectors/logo";
 import NextLink from "next/link";
 import Router from "next/router";
 import { useEffect, useState } from "react";
-import { FieldError } from "../../login-page/login-form/field-error";
 
 export function CreateAccountForm() {
   const [name, setName] = useState("");
@@ -81,48 +83,31 @@ export function CreateAccountForm() {
           <Logo />
         </Box>
         <Box w="100%">
-          <Text mb="10px">Nome:</Text>
-          <Input
-            size="sm"
-            mb="10px"
-            bg="transparent"
-            borderColor="primary.500"
-            value={name}
+          <FieldInput
+            fieldName="Nome:"
+            isError={isNameError}
             onChange={(e) => setName(e.target.value)}
-            _focus={{ outline: "none", boxShadow: "none", borderColor: "#fff" }}
-            isInvalid={isNameError}
+            value={name}
+            errorMessage="Nome é um campo obrigatório."
           />
-          <FieldError isError={isNameError}>
-            Nome é um campo obrigatório.
-          </FieldError>
-          <Text mb="10px">Login:</Text>
-          <Input
-            size="sm"
-            mb="10px"
-            bg="transparent"
-            value={login}
-            borderColor="primary.500"
+
+          <FieldInput
+            fieldName="Login:"
+            isError={isLoginError}
             onChange={(e) => setLogin(e.target.value)}
-            _focus={{ outline: "none", boxShadow: "none", borderColor: "#fff" }}
-            isInvalid={isLoginError}
+            value={login}
+            errorMessage="Login é um campo obrigatório."
           />
-          <FieldError isError={isLoginError}>
-            Login é um campo obrigatório.
-          </FieldError>
-          <Text mb="10px">Senha:</Text>
-          <Input
-            size="sm"
-            bg="transparent"
-            borderColor="primary.500"
+
+          <FieldInput
+            fieldName="Senha:"
+            isError={isPassError}
             value={pass}
             onChange={(e) => setPass(e.target.value)}
-            _focus={{ outline: "none", boxShadow: "none", borderColor: "#fff" }}
-            isInvalid={isPassError}
+            errorMessage="Senha é um campo obrigatório."
             type="password"
           />
-          <FieldError isError={isPassError}>
-            Senha é um campo obrigatório.
-          </FieldError>
+
           <Box mt="20px">
             <Checkbox
               isChecked={premiumAccount}

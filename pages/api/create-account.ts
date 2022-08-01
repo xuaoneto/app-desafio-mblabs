@@ -10,7 +10,7 @@ export interface Account {
   login: string;
   premiumAccount: boolean;
   token: string;
-  tickets?: { id: string }[];
+  tickets?: string[];
 }
 interface AccountReq {
   name: string;

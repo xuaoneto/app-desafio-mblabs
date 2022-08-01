@@ -20,7 +20,7 @@ export function MyTicketCard({
           <Text fontSize="25" mb="10px">
             {title}
           </Text>
-          <Text>Preço: R${price},00</Text>
+          <Text>Preço: R${price}</Text>
         </Box>
       </Flex>
     </Link>

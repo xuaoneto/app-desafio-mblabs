@@ -4,7 +4,7 @@ export const events: Event[] = [
   {
     id: "asdkjas129293nasd",
     title: "CURSO DE APERFEIÇOAMENTO EM ADOÇÃO",
-    data: "29/12/2022",
+    date: "29/12/2022",
     description: `Palestrante: Michelli Ferrari
     Currículo: Advogada e professora de cursos de capacitação e de aprimoramento em direitos da criança e do adolescente. Presidente da Comissão dos Direitos da Criança e do Adolescente da OAB-PB; Pós Graduada em Meios Adequados de Solução de Conflitos com imersão internacional pela Faculdade de Ensino Superior do Nordeste; Conselheira Estadual da OAB-PB.
     Palestrante: Adriana Torres
@@ -18,7 +18,7 @@ export const events: Event[] = [
   {
     id: "baiosdjansa",
     title: "CURSO DE APERFEIÇOAMENTO EM ADOÇÃO",
-    data: "29/12/2022",
+    date: "29/12/2022",
     description: `Palestrante: Michelli Ferrari
     Currículo: Advogada e professora de cursos de capacitação e de aprimoramento em direitos da criança e do adolescente. Presidente da Comissão dos Direitos da Criança e do Adolescente da OAB-PB; Pós Graduada em Meios Adequados de Solução de Conflitos com imersão internacional pela Faculdade de Ensino Superior do Nordeste; Conselheira Estadual da OAB-PB.
     Palestrante: Adriana Torres
@@ -32,7 +32,7 @@ export const events: Event[] = [
   {
     id: "aspldkasklmcdsa",
     title: "CURSO DE APERFEIÇOAMENTO EM ADOÇÃO",
-    data: "29/12/2022",
+    date: "29/12/2022",
     description: `Palestrante: Michelli Ferrari
     Currículo: Advogada e professora de cursos de capacitação e de aprimoramento em direitos da criança e do adolescente. Presidente da Comissão dos Direitos da Criança e do Adolescente da OAB-PB; Pós Graduada em Meios Adequados de Solução de Conflitos com imersão internacional pela Faculdade de Ensino Superior do Nordeste; Conselheira Estadual da OAB-PB.
     Palestrante: Adriana Torres
@@ -46,7 +46,7 @@ export const events: Event[] = [
   {
     id: "askdaslkdk",
     title: "CURSO DE APERFEIÇOAMENTO EM ADOÇÃO",
-    data: "29/12/2022",
+    date: "29/12/2022",
     description: `Palestrante: Michelli Ferrari
     Currículo: Advogada e professora de cursos de capacitação e de aprimoramento em direitos da criança e do adolescente. Presidente da Comissão dos Direitos da Criança e do Adolescente da OAB-PB; Pós Graduada em Meios Adequados de Solução de Conflitos com imersão internacional pela Faculdade de Ensino Superior do Nordeste; Conselheira Estadual da OAB-PB.
     Palestrante: Adriana Torres
@@ -60,7 +60,7 @@ export const events: Event[] = [
   {
     id: "fdoigjdkjfdsa",
     title: "CURSO DE APERFEIÇOAMENTO EM ADOÇÃO",
-    data: "29/12/2022",
+    date: "29/12/2022",
     description: `Palestrante: Michelli Ferrari
     Currículo: Advogada e professora de cursos de capacitação e de aprimoramento em direitos da criança e do adolescente. Presidente da Comissão dos Direitos da Criança e do Adolescente da OAB-PB; Pós Graduada em Meios Adequados de Solução de Conflitos com imersão internacional pela Faculdade de Ensino Superior do Nordeste; Conselheira Estadual da OAB-PB.
     Palestrante: Adriana Torres
