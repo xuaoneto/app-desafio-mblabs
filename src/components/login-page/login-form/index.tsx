@@ -1,66 +1,74 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Flex,
-  FormControl,
-  Input,
-  Link,
-  Text,
-} from "@chakra-ui/react";
-import axios from "axios";
+import { Box, Button, Flex, Link, Text } from "@chakra-ui/react";
 import { FieldError } from "components/field-error";
 import { FieldInput } from "components/field-input.tsx";
+import { EmailIcon } from "components/vectors/email-icon";
+import { LockIcon } from "components/vectors/lock-icon";
 import { Logo } from "components/vectors/logo";
+import { PasswordIcon } from "components/vectors/password-icon";
 import { useApplicationContext } from "contexts/application-context";
 import NextLink from "next/link";
 import Router from "next/router";
 import { useEffect, useState } from "react";
+import { supabaseClient } from "services/db/supabase";
+import * as yup from "yup";
 
 export function LoginForm() {
-  const [login, setLogin] = useState("");
-  const [isLoginError, setIsLoginError] = useState(false);
-  const [pass, setPass] = useState("");
-  const [isPassError, setIsPassError] = useState(false);
-  const { setIsLogged } = useApplicationContext();
+  const [email, setEmail] = useState("");
+  const [isEmailError, setIsEmailError] = useState("");
+  const [password, setPassword] = useState("");
+  const [isPasswordError, setIsPasswordError] = useState("");
+  const { setIsLogged, setUserLogged } = useApplicationContext();
   const [incorrectLogin, setIncorrectLogin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setIsLoginError(false);
-  }, [login]);
+    setIsEmailError("");
+  }, [email]);
 
   useEffect(() => {
-    setIsPassError(false);
-  }, [pass]);
+    setIsPasswordError("");
+  }, [password]);
 
   useEffect(() => {
     setIncorrectLogin("");
-  }, [pass, login]);
+  }, [password, email]);
 
   async function handleSubmit() {
-    const loginData = { login, pass };
+    const loginData = { email, password };
 
-    if (!login) setIsLoginError(true);
-    else setIsLoginError(false);
-    if (!pass) setIsPassError(true);
-    else setIsPassError(false);
+    const schema = yup.object().shape({
+      email: yup.string().required("Nome é um campo obrigatório"),
+      password: yup.string().required("Email é um campo obrigatório"),
+    });
 
-    if (!login || !pass) return;
-    setIsLoading(true);
-    const response = axios
-      .post("/api/login-account", loginData)
-      .then((response) => {
-        setIsLoading(false);
-        if (response.status === 200) {
-          window.localStorage.setItem("userToken", response.data);
+    schema
+      .validate(loginData)
+      .then(async () => {
+        setIsLoading(true);
+        const { user, error } = await supabaseClient.auth.signIn({
+          email,
+          password,
+        });
+        if (!error) {
+          setUserLogged(user);
           setIsLogged(true);
           Router.push("/");
+        } else {
+          setIncorrectLogin(error.message);
         }
-      })
-      .catch((response) => {
-        setIncorrectLogin(response.data);
         setIsLoading(false);
+      })
+      .catch((err: yup.ValidationError) => {
+        const fields = [
+          { isErrorRegex: /Email/, errorState: setIsEmailError },
+          { isErrorRegex: /Senha/, errorState: setIsPasswordError },
+        ];
+
+        fields.map((field) => {
+          err.errors.map((error) => {
+            if (field.isErrorRegex.test(error)) field.errorState(error);
+          });
+        });
       });
   }
 
@@ -73,25 +81,27 @@ export function LoginForm() {
         alignItems="center"
         flexDir="column"
       >
-        <Box mb="80px">
-          <Logo />
+        <Box mb="60px" w="80%">
+          <Logo width="100%" height="auto" />
         </Box>
         <Box w="100%">
           <FieldInput
-            fieldName="Login:"
-            isError={isLoginError}
-            onChange={(e) => setLogin(e.target.value)}
-            value={login}
-            errorMessage="Login é um campo obrigatório."
+            fieldName="Email:"
+            error={isEmailError}
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            placeholder="Email"
+            icon={<EmailIcon />}
           />
 
           <FieldInput
             fieldName="Senha:"
-            isError={isPassError}
-            onChange={(e) => setPass(e.target.value)}
-            value={pass}
+            error={isPasswordError}
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
             type="password"
-            errorMessage="Senha é um campo obrigatório."
+            placeholder="Senha"
+            icon={<PasswordIcon />}
           />
 
           <FieldError isError={incorrectLogin !== ""}>
@@ -104,8 +114,12 @@ export function LoginForm() {
             variant="custom"
             onClick={() => handleSubmit()}
             mt="25px"
+            w="100%"
+            leftIcon={<LockIcon />}
+            lineHeight="24px"
+            loadingText="Entrando"
           >
-            Login
+            Entrar
           </Button>
           <Text mt="25px">
             Ainda não é membro?{" "}

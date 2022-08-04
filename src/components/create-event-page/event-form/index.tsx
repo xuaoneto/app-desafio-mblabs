@@ -1,181 +1,214 @@
-import { DeleteIcon } from "@chakra-ui/icons";
-import {
-  Box,
-  Button,
-  Flex,
-  IconButton,
-  Input,
-  InputProps,
-  Text,
-  Textarea,
-  useToast,
-} from "@chakra-ui/react";
-import { api } from "api";
+import { Box, Button, Flex, Textarea, useToast } from "@chakra-ui/react";
 import { FieldError } from "components/field-error";
 import { FieldInput } from "components/field-input.tsx";
+import { UploadCloudIcon } from "components/upload-cloud-icon";
 import { Logo } from "components/vectors/logo";
-import { UploadImageIcon } from "components/vectors/upload-image-icon";
-import { AnimatePresence, motion } from "framer-motion";
+import { useApplicationContext } from "contexts/application-context";
 import Router from "next/router";
-import { DragEvent, useEffect, useRef, useState } from "react";
-import { generateToken } from "services/generatetoken";
-import { Event } from "../../../../pages/api/get-events";
+import { useEffect, useState } from "react";
+import { supabaseClient } from "services/db/supabase";
+import * as yup from "yup";
+import { currencyMask, numberMask } from "../input-masks";
 import { DraggableImageField } from "./draggable-file-field";
-import { handleValidateFile } from "./validate-file";
+import { handleValidateFile, toBase64File } from "./validate-file";
+
+interface NewEvent {
+  date: string;
+  description: string;
+  price: number;
+  tickets: number;
+  title: string;
+  created_by: string | undefined;
+  image?: string;
+}
 
 export function CreateEventForm() {
   const [title, setTitle] = useState("");
-  const [isTitleError, setIsTitleError] = useState(false);
-  const [tickets, setTickets] = useState(1);
-  const [isTicketsError, setIsTicketsError] = useState(false);
+  const [isTitleError, setIsTitleError] = useState("");
+  const [tickets, setTickets] = useState("0");
+  const [isTicketsError, setIsTicketsError] = useState("");
   const [date, setDate] = useState("");
-  const [isDateError, setIsDateError] = useState(false);
+  const [isDateError, setIsDateError] = useState("");
   const [description, setDescription] = useState("");
-  const [isDescriptionError, setIsDescriptionError] = useState(false);
-  const [image, setImage] = useState("");
-  const [isImageError, setIsImageError] = useState(false);
-  const [id, setId] = useState(generateToken());
-  const [price, setPrice] = useState("0,00");
-  const [isPriceError, setIsPriceError] = useState(false);
+  const [isDescriptionError, setIsDescriptionError] = useState("");
+  const [imageFile, setImageFile] = useState<File | undefined>();
+  const [base64Image, setBase64Image] = useState<string>("");
+  const [isImageError, setIsImageError] = useState("");
+  const [price, setPrice] = useState("R$ 0,00");
+  const [isPriceError, setIsPriceError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isUnknownError, setIsUnknownError] = useState(false);
+  const [isSendError, setIsSendError] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const { userLogged } = useApplicationContext();
 
   const toast = useToast();
 
   useEffect(() => {
-    setIsTitleError(false);
+    setIsTitleError("");
   }, [title]);
 
   useEffect(() => {
-    setIsTicketsError(false);
+    setIsTicketsError("");
   }, [tickets]);
 
   useEffect(() => {
-    setIsDateError(false);
-    console.log(date);
+    setIsDateError("");
   }, [date]);
 
   useEffect(() => {
-    setIsDescriptionError(false);
+    setIsDescriptionError("");
   }, [description]);
 
   useEffect(() => {
-    setIsImageError(false);
-  }, [image]);
+    setIsImageError("");
+  }, [base64Image]);
 
   useEffect(() => {
-    setIsPriceError(false);
+    setIsPriceError("");
   }, [price]);
 
   useEffect(() => {
-    setIsUnknownError(false);
-  }, [title, tickets, description, image, price]);
+    setIsSendError("");
+  }, [title, tickets, description, base64Image, price]);
 
-  const handleFile = (file: File) => {
-    if (!file) return setImage("");
+  const handleFile = async (file: File) => {
+    if (!file) return setBase64Image("");
     if (handleValidateFile(file, toast)) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = function () {
-        const result = reader.result as string;
-        setImage(result);
-      };
-      reader.onerror = function (error) {
-        console.log("Error: ", error);
-      };
+      setBase64Image((await toBase64File(file))!);
+      setImageFile(file);
     }
   };
 
   const handleSubmit = () => {
-    const newEvent: Event = {
+    const schema = yup.object().shape({
+      date: yup.date().required("Data é um campo obrigatório"),
+      description: yup.string().required("Descrição é um campo obrigatório"),
+      price: yup.number().required("Preço é um campo obrigatório"),
+      tickets: yup.number().required("Ingressos é um campo obrigatório"),
+      title: yup.string().required("Título é um campo obrigatório"),
+    });
+
+    let newEvent: NewEvent = {
       date,
       description,
-      id,
-      image,
       price: parseFloat(
         price.replace("R$ ", "").replace(".", "").replace(",", ".")
       ),
-      tickets,
+      tickets: parseInt(tickets),
       title,
+      created_by: userLogged?.id,
     };
 
-    if (!date) return setIsDateError(true);
-    else setIsDateError(false);
-    if (!description) return setIsDescriptionError(true);
-    else setIsDescriptionError(false);
-    if (!image) return setIsImageError(true);
-    else setIsImageError(false);
-    if (!price) return setIsPriceError(true);
-    else setIsPriceError(false);
-    if (!tickets) return setIsTicketsError(true);
-    else setIsTicketsError(false);
-    if (!title) return setIsTicketsError(true);
-    else setIsTicketsError(false);
+    schema
+      .validate(newEvent)
+      .then(async () => {
+        setIsLoading(true);
+        setIsUploading(true);
+        const path = `public/${new Date().getTime()}-${imageFile!.name.trim()}`;
+        const { data, error: senderror } = await supabaseClient.storage
+          .from("event-images")
+          .upload(path, imageFile!, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+        setIsUploading(false);
+        // Check 1
+        if (senderror) {
+          setIsSendError(senderror.message);
+          setIsLoading(false);
+          return;
+        }
 
-    setIsLoading(true);
+        const { publicURL, error: urlError } = supabaseClient.storage
+          .from("event-images")
+          .getPublicUrl(path);
+        // Check 2
+        if (urlError) {
+          setIsSendError(urlError.message);
+          setIsLoading(false);
+          return;
+        }
+        newEvent.image = publicURL!;
 
-    api
-      .post("api/create-event", newEvent)
-      .then((response) => {
-        setIsLoading(false);
+        const { error: insertError } = await supabaseClient
+          .from("events")
+          .insert([newEvent]);
+        // Check 3
+        if (insertError) {
+          setIsSendError(insertError.message);
+          setIsLoading(false);
+          return;
+        }
+
         Router.push("/");
       })
-      .catch((response) => {
+      .catch((err: yup.ValidationError) => {
+        const fields = [
+          { isErrorRegex: /Data/, errorState: setIsDateError },
+          { isErrorRegex: /Descrição/, errorState: setIsDescriptionError },
+          { isErrorRegex: /Preço/, errorState: setIsPriceError },
+          { isErrorRegex: /Ingressos/, errorState: setIsTicketsError },
+          { isErrorRegex: /Título/, errorState: setIsTitleError },
+        ];
+        if (!err.errors) {
+          setIsImageError("Insira uma imagem.");
+          setIsLoading(false);
+          setIsUploading(false);
+          return;
+        }
+        fields.map((field) => {
+          err.errors.map((error) => {
+            if (field.isErrorRegex.test(error)) field.errorState(error);
+          });
+        });
         setIsLoading(false);
-        setIsUnknownError(true);
+        setIsUploading(false);
       });
   };
 
-  function currencyMask(value: string): string {
-    value = value
-      .replace(".", "")
-      .replace(",", "")
-      .replace(/\D/g, "")
-      .replace("R$ ", "");
-    const options = { minimumFractionDigits: 2 }; //decimal places
-    const result = new Intl.NumberFormat("pt-BR", options).format(
-      parseFloat(value) / 100 // factor
-    );
-    return `R$ ${result}`;
-  }
   return (
-    <Flex as="form" w="100%" maxW="400px" flexDir="column" alignItems="start">
-      <Box mb="50px" mx="auto">
-        <Logo />
+    <Flex
+      as="form"
+      w="100%"
+      maxW="max-width-forms"
+      flexDir="column"
+      alignItems="start"
+    >
+      <Box mb="60px" w="80%" mx="auto">
+        <Logo width="100%" height="auto" />
       </Box>
 
       <FieldInput
         fieldName="Título:"
-        isError={isTitleError}
+        placeholder="Título"
+        error={isTitleError}
         onChange={(e) => setTitle(e.target.value)}
         value={title}
-        errorMessage="Título é um campo obrigatório."
       />
 
       <FieldInput
         fieldName="Preço:"
-        isError={isPriceError}
+        placeholder="Preço"
+        error={isPriceError}
         onChange={(e) => setPrice(currencyMask(e.target.value))}
         value={price}
-        errorMessage="Preço é um campo obrigatório."
       />
 
       <FieldInput
         fieldName="Número de ingressos:"
-        onChange={(e) => setTickets(parseFloat(e.target.value))}
+        onChange={(e) => setTickets(numberMask(e.target.value))}
         value={tickets}
         type="number"
-        isError={isTicketsError}
-        errorMessage="Número de ingressos é um campo obrigatório."
+        error={isTicketsError}
       />
 
       <FieldInput
         fieldName="Descrição:"
+        placeholder="Descrição"
         onChange={(e) => setDescription(e.target.value)}
         value={description}
         as={Textarea}
-        isError={isDescriptionError}
-        errorMessage="Descrição é um campo obrigatório."
+        error={isDescriptionError}
       />
 
       <FieldInput
@@ -183,25 +216,34 @@ export function CreateEventForm() {
         onChange={(e) => setDate(e.target.value)}
         value={date}
         type="datetime-local"
-        isError={isDateError}
-        errorMessage="Descrição é um campo obrigatório."
+        error={isDateError}
       />
 
       <DraggableImageField
         handleFile={handleFile}
-        image={image}
-        setImage={setImage}
-        isError={isImageError}
+        image={base64Image}
+        setImage={setBase64Image}
+        error={isImageError}
+        isUploading={isUploading}
       />
-      <FieldError isError={isUnknownError}>Algo deu errado.</FieldError>
-      <Button
-        mt="25px"
-        variant="custom"
-        isLoading={isLoading}
-        onClick={handleSubmit}
-      >
-        Submeter Evento
-      </Button>
+
+      <FieldError isError={isSendError !== ""}>
+        {isSendError || "Algo deu errado."}
+      </FieldError>
+      <Flex justifyContent="flex-end" w="100%">
+        <Button
+          mt="25px"
+          variant="custom"
+          isLoading={isLoading}
+          onClick={handleSubmit}
+          w="100%"
+          lineHeight="24px"
+          leftIcon={<UploadCloudIcon />}
+          loadingText="Publicando Evento"
+        >
+          Publicar Evento
+        </Button>
+      </Flex>
     </Flex>
   );
 }

@@ -8,7 +8,7 @@ export function ToastEvents() {
   const toast = useToast();
   useEffect(() => {
     if (userLogged) {
-      setName(userLogged.name!);
+      setName(userLogged?.user_metadata.name);
     }
   }, [userLogged]);
 
@@ -32,6 +32,6 @@ export const toastDefaultStyle: UseToastOptions = {
   containerStyle: {
     background: "var(--chakra-colors-secondary-400)",
     color: "#ffffff",
-    borderRadius: "6",
+    borderRadius: "0.25rem",
   },
 };

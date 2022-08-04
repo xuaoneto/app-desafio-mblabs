@@ -1,22 +1,24 @@
 import { DeleteIcon } from "@chakra-ui/icons";
-import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Progress, Text } from "@chakra-ui/react";
 import { FieldError } from "components/field-error";
 import { UploadImageIcon } from "components/vectors/upload-image-icon";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dispatch, DragEvent, SetStateAction, useRef, useState } from "react";
 
-const ALLOWED_FILE_TYPES = ` image/jpeg, image/jpg, image/png, image/svg, image/webp, image/svg+xml`;
+const ALLOWED_FILE_TYPES = `image/jpeg, image/jpg, image/png, image/svg, image/webp, image/svg+xml`;
 
 export function DraggableImageField({
   setImage,
   image,
   handleFile,
-  isError,
+  error,
+  isUploading,
 }: {
   setImage: Dispatch<SetStateAction<string>>;
   image: string;
   handleFile: (file: File) => void;
-  isError: boolean;
+  error: string;
+  isUploading: boolean;
 }) {
   const [dragHover, setDragHover] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -49,7 +51,7 @@ export function DraggableImageField({
           const file = e.dataTransfer.files;
           if (file.length) handleFile(file[0]);
         }}
-        borderRadius="0.125rem"
+        borderRadius="0.25rem"
         onDragOver={dragOver}
         onDragLeave={dragLeave}
         onDragEnter={dragEnter}
@@ -61,6 +63,7 @@ export function DraggableImageField({
         flexDir="column"
         _hover={{ border: "1px solid #fff" }}
         transition="0.3s"
+        w="100%"
       >
         <AnimatePresence>
           {image ? (
@@ -119,9 +122,16 @@ export function DraggableImageField({
         value={""}
         accept={ALLOWED_FILE_TYPES}
       />
-      <FieldError isError={isError}>
-        Banner do evento é um campo obrigatório.
-      </FieldError>
+      <Progress
+        colorScheme="green"
+        size="xs"
+        mt="10px"
+        w="100%"
+        borderRadius="4"
+        opacity={isUploading ? "1" : "0"}
+        isIndeterminate
+      />
+      <FieldError isError={error !== ""}>{error}</FieldError>
     </>
   );
 }

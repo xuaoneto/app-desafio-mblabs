@@ -1,72 +1,100 @@
-import {
-  Box,
-  Flex,
-  FormControl,
-  Input,
-  Text,
-  Link,
-  Button,
-  Checkbox,
-} from "@chakra-ui/react";
-import axios from "axios";
+import { Box, Button, Checkbox, Flex, Link, Text } from "@chakra-ui/react";
 import { FieldError } from "components/field-error";
 import { FieldInput } from "components/field-input.tsx";
-
+import { EmailIcon } from "components/vectors/email-icon";
 import { Logo } from "components/vectors/logo";
+import { UserIcon } from "components/vectors/user-icon";
+import { PasswordIcon } from "components/vectors/password-icon";
+import { PlaneIcon } from "components/vectors/plane-icon";
 import NextLink from "next/link";
 import Router from "next/router";
 import { useEffect, useState } from "react";
+import { supabaseClient } from "services/db/supabase";
+import * as yup from "yup";
+import { SaveIcon } from "components/vectors/save-icon";
 
 export function CreateAccountForm() {
   const [name, setName] = useState("");
-  const [isNameError, setIsNameError] = useState(false);
+  const [isNameError, setIsNameError] = useState("");
   const [login, setLogin] = useState("");
-  const [isLoginError, setIsLoginError] = useState(false);
-  const [pass, setPass] = useState("");
-  const [isPassError, setIsPassError] = useState(false);
-  const [premiumAccount, setPremiumAccount] = useState(false);
+  const [isLoginError, setIsLoginError] = useState("");
+  const [password, setPass] = useState("");
+  const [isPassError, setIsPassError] = useState("");
+  const [premium_account, setPremiumAccount] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [incorrectAccount, setIncorrectAccount] = useState("");
+  const [email, setEmail] = useState("");
+  const [isEmailError, setIsEmailError] = useState("");
 
   useEffect(() => {
-    setIsLoginError(false);
+    setIsLoginError("");
   }, [login]);
 
   useEffect(() => {
-    setIsPassError(false);
-  }, [pass]);
+    setIsPassError("");
+  }, [password]);
 
   useEffect(() => {
-    setIsNameError(false);
+    setIsNameError("");
   }, [name]);
 
   useEffect(() => {
+    setIsEmailError("");
+  }, [email]);
+
+  useEffect(() => {
     setIncorrectAccount("");
-  }, [login, pass, name]);
+  }, [login, password, name]);
 
   async function handleSubmit() {
-    const accountData = { login, pass, name, premiumAccount };
+    const accountData = { login, password, name, premium_account, email };
 
-    if (!login) setIsLoginError(true);
-    else setIsLoginError(false);
-    if (!pass) setIsPassError(true);
-    else setIsPassError(false);
-    if (!name) setIsNameError(true);
-    else setIsNameError(false);
+    const schema = yup.object().shape({
+      name: yup
+        .string()
+        .required("Nome é um campo obrigatório")
+        .min(5, "Nome tem que ter no mínimo 5 caracteres."),
+      email: yup
+        .string()
+        .required("Email é um campo obrigatório")
+        .email("Insira um Email válido"),
+      password: yup
+        .string()
+        .required("Senha é um campo obrigatório")
+        .min(8, "Senha tem que ter pelo menos 8 digitos"),
+      premium_account: yup.boolean().required(),
+    });
 
-    if (!login || !pass || !name) return;
-    setIsLoading(true);
-    axios
-      .post("/api/create-account", accountData)
-      .then((response) => {
-        setIsLoading(false);
-        if (response.data === "conta criada com sucesso") {
+    schema
+      .validate(accountData)
+      .then(async () => {
+        setIsLoading(true);
+        const { data: user, error } = await supabaseClient.auth.api.createUser({
+          email,
+          password,
+          user_metadata: { premium_account, name },
+          email_confirm: true,
+        });
+        if (!error) {
           Router.push("/login");
+        } else {
+          setIncorrectAccount(error.message);
         }
-      })
-      .catch((response) => {
         setIsLoading(false);
-        setIncorrectAccount(response.data);
+      })
+      .catch((err: yup.ValidationError) => {
+        const fields = [
+          { isErrorRegex: /Nome/, errorState: setIsNameError },
+          { isErrorRegex: /Login/, errorState: setIsLoginError },
+          { isErrorRegex: /Email/, errorState: setIsEmailError },
+          { isErrorRegex: /Senha/, errorState: setIsPassError },
+        ];
+
+        fields.map((field) => {
+          err.errors.map((error) => {
+            if (field.isErrorRegex.test(error)) field.errorState(error);
+          });
+        });
       });
   }
 
@@ -79,38 +107,42 @@ export function CreateAccountForm() {
         alignItems="center"
         flexDir="column"
       >
-        <Box mb="80px">
-          <Logo />
+        <Box mb="60px" w="80%" h="auto">
+          <Logo width="100%" height="auto" />
         </Box>
+
         <Box w="100%">
           <FieldInput
             fieldName="Nome:"
-            isError={isNameError}
+            error={isNameError}
             onChange={(e) => setName(e.target.value)}
             value={name}
-            errorMessage="Nome é um campo obrigatório."
+            placeholder="Nome"
+            icon={<UserIcon />}
           />
 
           <FieldInput
-            fieldName="Login:"
-            isError={isLoginError}
-            onChange={(e) => setLogin(e.target.value)}
-            value={login}
-            errorMessage="Login é um campo obrigatório."
+            fieldName="Email:"
+            error={isEmailError}
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            placeholder="Email"
+            icon={<EmailIcon />}
           />
 
           <FieldInput
             fieldName="Senha:"
-            isError={isPassError}
-            value={pass}
+            error={isPassError}
+            value={password}
             onChange={(e) => setPass(e.target.value)}
-            errorMessage="Senha é um campo obrigatório."
             type="password"
+            placeholder="Senha"
+            icon={<PasswordIcon />}
           />
 
           <Box mt="20px">
             <Checkbox
-              isChecked={premiumAccount}
+              isChecked={premium_account}
               onChange={(e) => setPremiumAccount(e.target.checked)}
               colorScheme="green"
               borderColor="primary.500"
@@ -128,6 +160,10 @@ export function CreateAccountForm() {
             variant="custom"
             onClick={() => handleSubmit()}
             mt="25px"
+            w="100%"
+            lineHeight="24px"
+            leftIcon={<SaveIcon />}
+            loadingText="Criando Conta"
           >
             Criar Conta
           </Button>

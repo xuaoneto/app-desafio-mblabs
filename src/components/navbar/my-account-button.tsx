@@ -1,48 +1,45 @@
-import { Link, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
-import { useApplicationContext } from "contexts/application-context";
-import Router from "next/router";
+import { Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Fragment } from "react";
+import { MenuSubItem } from "types";
 
-export function MyAccountButton() {
-  const { userLogged, setIsLogged } = useApplicationContext();
+export function MyAccountButton({
+  myAccountArray,
+}: {
+  myAccountArray: MenuSubItem[];
+}) {
   return (
     <Menu>
-      <MenuButton as={Link} _hover={{ textDecor: "underline" }} ml="15px">
+      <MenuButton as={Button} variant="ghost" ml="15px">
         Minha Conta
       </MenuButton>
       <MenuList
         bg="#1a1a1a"
-        border="1px solid var(--chakra-colors-primary-500)"
+        border="1px solid var(--chakra-colors-secondary-400)"
+        borderRadius="0.25rem"
         py="0"
+        overflow="hidden"
       >
-        {userLogged?.premiumAccount ? (
-          <MenuItem
-            bg="transparent"
-            _hover={{ bg: "rgba(255,255,255,0.1)" }}
-            onClick={() => Router.push("/create-event")}
-            _focus={{}}
-          >
-            Criar Evento
-          </MenuItem>
-        ) : null}
-        <MenuItem
-          bg="transparent"
-          _hover={{ bg: "rgba(255,255,255,0.1)" }}
-          onClick={() => Router.push("/my-tickets")}
-          _focus={{}}
-        >
-          Meus Tickets
-        </MenuItem>
-        <MenuItem
-          bg="transparent"
-          _hover={{ bg: "rgba(255,255,255,0.1)" }}
-          onClick={() => {
-            window.localStorage.setItem("userToken", "");
-            setIsLogged(false);
-          }}
-          _focus={{}}
-        >
-          Sair
-        </MenuItem>
+        {myAccountArray.map(({ name, onClick, condition }) => {
+          const subItem = (
+            <MenuItem
+              bg="transparent"
+              _hover={{ bg: "secondary.400" }}
+              onClick={onClick}
+              _focus={{}}
+            >
+              {name}
+            </MenuItem>
+          );
+          return (
+            <Fragment key={name}>
+              {condition === undefined ? (
+                <>{subItem}</>
+              ) : (
+                condition && <>{subItem}</>
+              )}
+            </Fragment>
+          );
+        })}
       </MenuList>
     </Menu>
   );

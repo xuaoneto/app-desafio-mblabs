@@ -1,5 +1,6 @@
 import { useColorMode, useMediaQuery } from "@chakra-ui/react";
-import axios from "axios";
+import { User } from "@supabase/supabase-js";
+import { api } from "api";
 import {
   createContext,
   Dispatch,
@@ -9,13 +10,14 @@ import {
   useEffect,
   useState,
 } from "react";
+import { supabaseClient } from "services/db/supabase";
 import { Account } from "../../pages/api/create-account";
 
 interface ApplicationContextProps {
   isLogged: boolean | undefined;
   setIsLogged: Dispatch<SetStateAction<boolean | undefined>>;
-  userLogged: Partial<Account> | undefined;
-  setUserLogged: Dispatch<SetStateAction<Partial<Account> | undefined>>;
+  userLogged: User | null;
+  setUserLogged: Dispatch<SetStateAction<User | null>>;
   isMobile: boolean | undefined;
   setUpdateUserState: Dispatch<SetStateAction<number>>;
 }
@@ -23,7 +25,7 @@ interface ApplicationContextProps {
 const DEFAULT = {
   isLogged: undefined,
   setIsLogged: () => undefined,
-  userLogged: undefined,
+  userLogged: null,
   setUserLogged: () => undefined,
   isMobile: undefined,
   setUpdateUserState: () => undefined,
@@ -33,36 +35,31 @@ const Context = createContext<ApplicationContextProps>(DEFAULT);
 
 const Provider = ({ children }: { children: ReactNode }) => {
   const [isLogged, setIsLogged] = useState<boolean | undefined>();
-  const [userLogged, setUserLogged] = useState<Partial<Account> | undefined>();
+  const [userLogged, setUserLogged] = useState<User | null>(null);
   const [isMobile, setIsMobile] = useState<boolean | undefined>();
   const [updateUserState, setUpdateUserState] = useState(0);
   const [isMobileMediaQuery] = useMediaQuery("(max-width: 767px)");
+  const { setColorMode } = useColorMode();
+
+  useEffect(() => {
+    setColorMode("dark");
+  }, []);
 
   useEffect(() => {
     setIsMobile(isMobileMediaQuery);
   }, [isMobileMediaQuery]);
 
   useEffect(() => {
-    async function validateLogin() {
-      const userToken = window.localStorage.getItem("userToken");
-      if (!userToken) return setIsLogged(false);
-      else {
-        axios
-          .post("/api/get-login-by-token", { token: userToken })
-          .then((response) => {
-            if (response.status === 200) {
-              setIsLogged(true);
-              setUserLogged(response.data);
-              console.log(response.data);
-            }
-          })
-          .catch((response) => {
-            setIsLogged(false);
-            console.log("validate login error");
-          });
-      }
+    const user = supabaseClient.auth.user();
+
+    if (!user) {
+      console.log("Unlogged user");
+      return setIsLogged(false);
+    } else {
+      console.log("User Logged");
+      setIsLogged(true);
+      setUserLogged(user);
     }
-    validateLogin();
   }, [isLogged, updateUserState]);
 
   return (

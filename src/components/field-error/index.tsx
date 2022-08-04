@@ -15,9 +15,9 @@ export function FieldError({
           p="10px"
           my="10px"
           color="red.600"
-          borderRadius="8"
+          borderRadius="0.25rem"
           fontSize="13"
-          bg="rgba(255,255,255, 0.05)"
+          bg="secondary.300"
         >
           {children}
         </Box>

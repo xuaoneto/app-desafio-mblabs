@@ -1,26 +1,38 @@
 import { Container, Image, Text } from "@chakra-ui/react";
-import { api } from "api";
 import { BuyButton } from "components/event-page/buy-button";
 import { Navbar } from "components/navbar";
 import type { NextPage } from "next";
-import { Event } from "../api/get-events";
+import { NextSeo } from "next-seo";
+import { supabaseClient } from "services/db/supabase";
+import { Event } from "types";
 
 const EventPage: NextPage<{ event: Event }> = ({ event }) => {
   return (
     <>
+      <NextSeo title={event.title} />
       <Navbar />
-      <Container display="flex" flexDir="column" alignItems="center" py="100px">
-        <Image
-          w="80%"
-          mb="30px"
-          alt="imagem do evento"
-          src={event.image}
-          borderRadius="10"
-          boxShadow="rgb(0, 0, 0, 0.2) 10px 10px 14px 1px"
-        />
-        <Text fontSize="40" mb="20px">
+      <Container
+        display="flex"
+        flexDir="column"
+        alignItems={{ base: "start", lg: "center" }}
+        py={{ base: "50px", lg: "100px" }}
+      >
+        <Text
+          fontSize={{ base: "25", lg: "40" }}
+          textAlign={{ base: "center", lg: "start" }}
+          mb="50px"
+        >
           {event.title}
         </Text>
+        <Image
+          w={{ base: "100%", xl: "80%" }}
+          mb="50px"
+          alt="imagem do evento"
+          src={event.image}
+          borderRadius="0.25rem"
+          boxShadow="rgb(0, 0, 0, 0.2) 10px 10px 14px 1px"
+        />
+
         <Text>{event.description}</Text>
       </Container>
       <BuyButton event={event} numberOfTickets={event.tickets} />
@@ -31,21 +43,25 @@ const EventPage: NextPage<{ event: Event }> = ({ event }) => {
 export default EventPage;
 
 export async function getStaticProps({ params }: { params: { slug: string } }) {
-  const response = await api.get(`api/get-events?id=${params.slug}`);
-  const event = response.data[0];
+  let { data: events } = (await supabaseClient
+    .from("events")
+    .select()
+    .eq("id", params.slug)) as { data: Event[] };
 
   return {
     props: {
-      event,
+      event: events[0],
     },
     revalidate: 10,
   };
 }
 
 export async function getStaticPaths() {
-  const getAllEvents = await api.get("api/get-events");
+  const { data: getAllEvents } = (await supabaseClient
+    .from("events")
+    .select()) as { data: Event[] };
   let paths: { params: { slug: string } }[] = [];
-  getAllEvents.data.map((event: Event) => {
+  getAllEvents.map((event: Event) => {
     paths.push({ params: { slug: `${event.id}` } });
   });
 

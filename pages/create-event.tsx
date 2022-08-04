@@ -1,9 +1,9 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Container, Flex, Text } from "@chakra-ui/react";
 import { CreateEventForm } from "components/create-event-page/event-form";
-import { Navbar, navBarHeight } from "components/navbar";
+import { Navbar } from "components/navbar";
 import { useApplicationContext } from "contexts/application-context";
-
 import type { NextPage } from "next";
+import { NextSeo } from "next-seo";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 
@@ -12,7 +12,7 @@ const CreateEvent: NextPage = () => {
   const [permissionDenied, setPermissionDenied] = useState(false);
 
   useEffect(() => {
-    if (isLogged === false || userLogged?.premiumAccount === false) {
+    if (isLogged === false || !userLogged?.user_metadata.premium_account) {
       setPermissionDenied(true);
       setTimeout(() => {
         Router.push("/");
@@ -22,14 +22,14 @@ const CreateEvent: NextPage = () => {
 
   return (
     <>
+      <NextSeo title="Criar Conta" />
       <Navbar />
       <Flex
         w="100%"
-        h={`calc(100vh - ${navBarHeight})`}
+        minH={`calc(100vh - var(--chakra-sizes-navbar-height))`}
         py="100px"
         justifyContent="center"
         alignItems="center"
-        overflow="auto"
       >
         {permissionDenied ? (
           <Text>
@@ -38,7 +38,9 @@ const CreateEvent: NextPage = () => {
             <br /> Redirecting...
           </Text>
         ) : (
-          <CreateEventForm />
+          <Container variant="centered">
+            <CreateEventForm />
+          </Container>
         )}
       </Flex>
     </>

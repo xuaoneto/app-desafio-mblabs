@@ -15,7 +15,12 @@ export function MyTicketCard({
   return (
     <Link passHref href={link}>
       <Flex as="a" flexDir="column">
-        <Image borderRadius="7" mb="3" src={image} alt="imagem do evento" />
+        <Image
+          borderRadius="0.25rem"
+          mb="3"
+          src={image}
+          alt="imagem do evento"
+        />
         <Box>
           <Text fontSize="25" mb="10px">
             {title}

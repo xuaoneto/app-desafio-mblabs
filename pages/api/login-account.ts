@@ -19,7 +19,7 @@ export default function handler(
     if (!login || !pass) res.status(400).send("conta inválida.");
     else {
       const registeredAccount: Account | undefined = accounts.find(
-        (current) => current.login === login && current.pass === pass
+        (current) => current.login === login && current.password === pass
       );
       if (!registeredAccount) res.status(400).send("conta inválida.");
       else {

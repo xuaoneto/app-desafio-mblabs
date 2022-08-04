@@ -1,13 +1,25 @@
-import { api } from "api";
 import { GridEvents } from "components/home-page/grid-events";
 import { Navbar } from "components/navbar";
-
 import type { NextPage } from "next";
-import { Event } from "./api/get-events";
+import { NextSeo } from "next-seo";
+import { useEffect, useState } from "react";
+import { supabaseClient } from "services/db/supabase";
+import { Event } from "types";
 
-const Home: NextPage<{ events: Event[] }> = ({ events }) => {
+const Home: NextPage<{ events: Event[] }> = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+
+  useEffect(() => {
+    async function getEvents() {
+      const { data, error } = await supabaseClient.from("events").select();
+      setEvents(data ?? []);
+    }
+    getEvents();
+  }, []);
+
   return (
     <>
+      <NextSeo title="Eventos" />
       <Navbar />
       <GridEvents events={events} />
     </>
@@ -15,12 +27,3 @@ const Home: NextPage<{ events: Event[] }> = ({ events }) => {
 };
 
 export default Home;
-
-export async function getServerSideProps() {
-  const response = await api.get("api/get-events");
-  const events = response.data;
-
-  return {
-    props: { events },
-  };
-}

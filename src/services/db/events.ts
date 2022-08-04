@@ -1,8 +1,8 @@
-import { Event } from "../../../pages/api/get-events";
+import { Event } from "types";
 
 export const events: Event[] = [
   {
-    id: "asdkjas129293nasd",
+    id: 1,
     title: "CURSO DE APERFEIÇOAMENTO EM ADOÇÃO",
     date: "29/12/2022",
     description: `Palestrante: Michelli Ferrari
@@ -16,7 +16,7 @@ export const events: Event[] = [
     price: 20,
   },
   {
-    id: "baiosdjansa",
+    id: 2,
     title: "CURSO DE APERFEIÇOAMENTO EM ADOÇÃO",
     date: "29/12/2022",
     description: `Palestrante: Michelli Ferrari
@@ -30,7 +30,7 @@ export const events: Event[] = [
     price: 15,
   },
   {
-    id: "aspldkasklmcdsa",
+    id: 3,
     title: "CURSO DE APERFEIÇOAMENTO EM ADOÇÃO",
     date: "29/12/2022",
     description: `Palestrante: Michelli Ferrari
@@ -44,7 +44,7 @@ export const events: Event[] = [
     price: 25,
   },
   {
-    id: "askdaslkdk",
+    id: 4,
     title: "CURSO DE APERFEIÇOAMENTO EM ADOÇÃO",
     date: "29/12/2022",
     description: `Palestrante: Michelli Ferrari
@@ -58,7 +58,7 @@ export const events: Event[] = [
     price: 30,
   },
   {
-    id: "fdoigjdkjfdsa",
+    id: 5,
     title: "CURSO DE APERFEIÇOAMENTO EM ADOÇÃO",
     date: "29/12/2022",
     description: `Palestrante: Michelli Ferrari

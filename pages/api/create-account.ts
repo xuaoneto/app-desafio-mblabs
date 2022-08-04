@@ -6,17 +6,17 @@ type Data = string;
 
 export interface Account {
   name: string;
-  pass: string;
+  password: string;
   login: string;
-  premiumAccount: boolean;
+  premium_account: boolean;
   token: string;
-  tickets?: string[];
+  tickets?: number[];
 }
 interface AccountReq {
   name: string;
-  pass: string;
+  password: string;
   login: string;
-  premiumAccount: boolean;
+  premium_account: boolean;
 }
 
 export default function handler(
@@ -24,9 +24,9 @@ export default function handler(
   res: NextApiResponse<Data>
 ) {
   if (req.method === "POST") {
-    let { login, pass, name, premiumAccount }: AccountReq = req.body;
+    let { login, password, name, premium_account }: AccountReq = req.body;
 
-    if (!login || !pass || !name) res.status(400).send("conta inválida.");
+    if (!login || !password || !name) res.status(400).send("conta inválida.");
     else {
       const isRepeated =
         accounts.find((current) => current.login === login) !== undefined;
@@ -37,9 +37,9 @@ export default function handler(
 
         accounts.push({
           login,
-          pass,
+          password,
           name,
-          premiumAccount,
+          premium_account,
           token,
         });
         res.status(200).send("conta criada com sucesso");
@@ -54,9 +54,9 @@ export default function handler(
 export let accounts: Account[] = [
   {
     login: "test",
-    pass: "test",
+    password: "test",
     name: "Joao Neto",
-    premiumAccount: true,
+    premium_account: true,
     token: "qiKqB7AqC2GCnK1hfGZO",
   },
 ];

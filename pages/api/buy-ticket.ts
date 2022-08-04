@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { events } from "services/db/events";
+import { Event } from "types";
 import { accounts } from "./create-account";
-import { Event } from "./get-events";
 
 type Data = Event[] | string;
 

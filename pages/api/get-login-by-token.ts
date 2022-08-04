@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getLoginByToken } from "services/get-login-by-token";
 
-import { Account, accounts } from "./create-account";
+import { Account } from "./create-account";
 
 type Data = Partial<Account> | string;
 
@@ -17,14 +18,9 @@ export default function handler(
 
     if (!token) res.status(400).send("conta inválida.");
     else {
-      const registeredAccount: Account | undefined = accounts.find(
-        (current) => current.token === token
-      );
-      if (!registeredAccount) res.status(400).send("conta inválida.");
-      else {
-        const { name, tickets, premiumAccount } = registeredAccount;
-        res.status(200).json({ name, tickets, premiumAccount });
-      }
+      const account = getLoginByToken(token);
+      if (account) res.status(200).json(account);
+      else res.status(400).send("conta inválida.");
     }
   } else {
     res.status(404).send("not found");
