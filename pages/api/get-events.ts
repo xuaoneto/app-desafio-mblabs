@@ -1,16 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { events } from "services/db/events";
-
-export interface Event {
-  id?: string;
-  title: string;
-  date: string;
-  description: string;
-  image: string;
-  tickets: number;
-  price: number;
-  created_by?: string;
-}
+import { Event } from "types";
 
 type Data = Event[] | string;
 

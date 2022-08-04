@@ -15,7 +15,7 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { toastDefaultStyle } from "components/home-page/apresentation";
 import { DolarIcon } from "components/vectors/dolar-icon";
 import { useApplicationContext } from "contexts/application-context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabaseClient } from "services/db/supabase";
 import { Event } from "types";
 
@@ -28,7 +28,18 @@ export function BuyButton({
 }) {
   const { isLogged, setUpdateUserState, userLogged } = useApplicationContext();
   const [isLoading, setIsLoading] = useState(false);
+  const [isPast, setIsPast] = useState(false);
   const toast = useToast();
+
+  useEffect(() => {
+    if (!(new Date(event.date).getTime() - new Date().getTime() > 0))
+      setIsPast(true);
+  }, []);
+
+  useEffect(() => {
+    if (isPast)
+      toast({ title: "Esse evento já aconteceu.", ...toastDefaultStyle });
+  }, [isPast]);
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -99,6 +110,7 @@ export function BuyButton({
           variant="custom"
           fontWeight="bold"
           onClick={onOpen}
+          isDisabled={isPast}
         >
           Comprar Ingresso
         </Button>

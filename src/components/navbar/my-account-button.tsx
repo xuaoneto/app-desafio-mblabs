@@ -9,7 +9,7 @@ export function MyAccountButton({
 }) {
   return (
     <Menu>
-      <MenuButton as={Button} variant="ghost" ml="15px">
+      <MenuButton as={Button} variant="ghost" ml="15px" fontWeight="300">
         Minha Conta
       </MenuButton>
       <MenuList

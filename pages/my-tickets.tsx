@@ -29,7 +29,7 @@ const MyTickets: NextPage = () => {
           .from("events")
           .select()
           .in("id", filterArray)) as { data: Event[] };
-        setBuyedTickets(events);
+        setBuyedTickets(events ?? []);
       } else return;
     }
     if (isLogged !== undefined) {

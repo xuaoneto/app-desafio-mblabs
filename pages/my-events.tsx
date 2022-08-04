@@ -50,6 +50,7 @@ const MyEvents: NextPage = () => {
       .match({ id: idDeleteRow });
     setIsDeleting(false);
     setUpdateTable((state) => state + 1);
+    onClose();
   }
 
   useEffect(() => {

@@ -52,10 +52,11 @@ export function Navbar() {
       <Box
         borderBottom="1px solid var(--chakra-colors-primary-500)"
         h={"navbar-height"}
-        bg="rgba(26, 26, 26, 0.6)"
+        bg="rgba(26, 26, 26, 0.8)"
         backdropFilter="blur(6px)"
         pos="sticky"
         top="0"
+        zIndex="100"
       >
         <Container
           display="flex"
@@ -72,7 +73,7 @@ export function Navbar() {
           ) : (
             <Flex alignItems="center">
               <NextLink passHref href="/">
-                <Button as="a" variant="ghost">
+                <Button as="a" variant="ghost" fontWeight="300">
                   Home
                 </Button>
               </NextLink>

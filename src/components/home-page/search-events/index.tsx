@@ -23,8 +23,13 @@ export function SearchEvents({
 
   useEffect(() => {
     const filteredEvents = events.filter((current) => {
+      const active =
+        new Date(current.date).getTime() - new Date().getTime() > 0;
       if (!myEvents)
-        return current.title.toLowerCase().includes(searchEvents.toLowerCase());
+        return (
+          current.title.toLowerCase().includes(searchEvents.toLowerCase()) &&
+          active
+        );
       else {
         return (
           current.title.toLowerCase().includes(searchEvents.toLowerCase()) &&

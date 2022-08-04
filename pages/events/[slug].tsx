@@ -25,11 +25,11 @@ const EventPage: NextPage<{ event: Event }> = ({ event }) => {
           {event.title}
         </Text>
         <Image
-          w={{ base: "100%", xl: "80%" }}
+          w="100%"
           mb="50px"
           alt="imagem do evento"
           src={event.image}
-          borderRadius="0.25rem"
+          borderRadius="0.5rem"
           boxShadow="rgb(0, 0, 0, 0.2) 10px 10px 14px 1px"
         />
 
